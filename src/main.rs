@@ -1,3 +1,4 @@
+use float_cmp::approx_eq;
 use crate::cluster::*;
 mod calc_dist;
 mod find_min;
@@ -10,13 +11,13 @@ pub const NUMBER_OF_POINTS: usize = 8;
 pub const DIMENSION_OF_POINTS: usize = 2;
 
 // Points to be classified
-const POINT_SET:[[f64; DIMENSION_OF_POINTS]; NUMBER_OF_POINTS] = [[3.0,1.0], [5.0,1.0], [4.0,2.0], [5.0,2.0], [2.0,5.0], [7.0,4.0], [1.0,0.0], [8.0,0.0]];
+const POINT_SET:[[f64; DIMENSION_OF_POINTS]; NUMBER_OF_POINTS] = [[3.0,1.0], [5.0,1.0], [4.0,2.0], [5.0,2.0], [2.0,3.0], [7.0,4.0], [1.0,0.0], [8.0,0.0]];
 
 fn main () {
 
     // Set of clusters
     // Initial cluster points to be put here (as many points as clusters)
-    let mut clusters = Cluster::initialise_clusters([[1.0,2.0], [1.0, 4.0]]);
+    let mut clusters = Cluster::initialise_clusters([[3.0,0.0], [5.0, 7.0]]);
     // loop iterations
     let mut passes = 0;
     // for storing the distances
@@ -56,13 +57,16 @@ fn main () {
         for cluster in &mut clusters {
             println!("New Centroid: {:?}", cluster.centroid);
             println!("Old Centroid: {:?}", cluster.old_centroid);
-            if cluster.centroid == cluster.old_centroid {
-                equality += 1;
+            for i in 0..DIMENSION_OF_POINTS {
+                if approx_eq!(f64, cluster.centroid[i], cluster.old_centroid[i]) {
+                    equality += 1;
+                }
             }
+
             cluster.old_centroid = cluster.centroid.clone();
         }
 
-        if equality == NUMBER_OF_CLUSTERS {
+        if equality == (NUMBER_OF_CLUSTERS * DIMENSION_OF_POINTS) {
             break
         }
     }
