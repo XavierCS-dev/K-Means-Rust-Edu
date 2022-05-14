@@ -31,6 +31,7 @@ fn main () {
         for cluster in &mut clusters {
             cluster.reset_points();
         }
+
         for point in POINT_SET {
             for i in 0..NUMBER_OF_CLUSTERS {
                 checks[i] = calc_dist::calc_dist(&point, &clusters[i].centroid);
